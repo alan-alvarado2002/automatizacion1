@@ -61,6 +61,7 @@ rotar_logs() {
 # ============================================================
 # FUNCIÓN: enviar_telegram
 # ============================================================
+
 enviar_telegram() {
     local mensaje="$1"
 
@@ -71,15 +72,18 @@ enviar_telegram() {
 
     local url="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
 
-    if ! curl -s --max-time 10 -X POST "$url" \
+    local response
+    response=$(curl -s --max-time 10 -X POST "$url" \
         -d "chat_id=${TELEGRAM_CHAT_ID}" \
         -d "parse_mode=Markdown" \
-        --data-urlencode "text=${mensaje}" > /dev/null; then
-        log "? Fallo enviando alerta a Telegram."
-        return 1
+        -d "text=${mensaje}")
+
+    if echo "$response" | grep -q '"ok":true'; then
+        log "? Alerta enviada a Telegram."
+    else
+        log "? Fallo enviando alerta a Telegram. Respuesta: $response"
     fi
 }
-
 # ============================================================
 # FUNCIÓN: limpiar_tmp
 # ============================================================
