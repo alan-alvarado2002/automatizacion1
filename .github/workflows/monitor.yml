@@ -33,9 +33,14 @@ jobs:
 
       - name: Enviar reporte a Telegram
         if: always()
+        env:
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           curl -v --max-time 15 \
-            "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage?chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=Monitor+OK"
+            -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${CHAT_ID}" \
+            -d "text=Monitor OK desde GitHub Actions"
 
       - name: Subir logs como artefacto
         if: always()
