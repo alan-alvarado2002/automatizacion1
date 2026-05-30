@@ -21,11 +21,26 @@ jobs:
         env:
           MODO: once
           LOG_BASE: ${{ github.workspace }}/logs/monitor_recursos
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           mkdir -p logs
           ./monitor.sh
+
+      - name: Mostrar log generado
+        if: always()
+        run: |
+          echo "--- Contenido del log ---"
+          cat logs/monitor_recursos_*.log || echo "(sin log)"
+
+      - name: Enviar reporte a Telegram
+        if: always()
+        run: |
+          LOG=$(cat logs/monitor_recursos_*.log 2>/dev/null || echo "Sin log disponible")
+          MESSAGE="*Monitor GitHub Actions*%0A$(date '+%Y-%m-%d %H:%M')%0A%0A${LOG}"
+          curl -s --max-time 10 -X POST \
+            "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+            -d "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" \
+            -d "parse_mode=Markdown" \
+            --data-urlencode "text=${LOG}"
 
       - name: Subir logs como artefacto
         if: always()
