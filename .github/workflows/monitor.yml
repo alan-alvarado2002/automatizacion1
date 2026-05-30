@@ -34,13 +34,8 @@ jobs:
       - name: Enviar reporte a Telegram
         if: always()
         run: |
-          LOG=$(cat logs/monitor_recursos_*.log 2>/dev/null || echo "Sin log disponible")
-          MESSAGE="*Monitor GitHub Actions*%0A$(date '+%Y-%m-%d %H:%M')%0A%0A${LOG}"
-          curl -s --max-time 10 -X POST \
-            "https://api.telegram.org/bot${{ secrets.8510134888:AAFrNVRqdSaD8NOyxvFySPvin9G4Wyej4g4 }}/sendMessage" \
-            -d "chat_id=${{ secrets.-5114113868 }}" \
-            -d "parse_mode=Markdown" \
-            --data-urlencode "text=${LOG}"
+          curl -v --max-time 15 \
+            "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage?chat_id=${{ secrets.TELEGRAM_CHAT_ID }}&text=Monitor+OK"
 
       - name: Subir logs como artefacto
         if: always()
