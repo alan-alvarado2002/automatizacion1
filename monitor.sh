@@ -44,7 +44,8 @@ cargar_env() {
 log() {
     local FECHA_HORA
     FECHA_HORA=$(date '+%Y-%m-%d %H:%M:%S')
-    local LOG_HOY="${LOG_BASE}_$(date '+%Y-%m-%d').log"
+    local LOG_HOY
+    LOG_HOY="${LOG_BASE}_$(date '+%Y-%m-%d').log"
     echo "[${FECHA_HORA}] $1" | tee -a "$LOG_HOY"
 }
 
