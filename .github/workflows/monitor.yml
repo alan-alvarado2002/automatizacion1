@@ -37,10 +37,12 @@ jobs:
           BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
-          curl -v --max-time 15 \
-            -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" \
-            -d "chat_id=${CHAT_ID}" \
-            -d "text=Monitor OK desde GitHub Actions"
+          echo "Longitud token: ${#BOT_TOKEN}"
+          echo "Longitud chat_id: ${#CHAT_ID}"
+          curl --max-time 15 \
+            --form "chat_id=${CHAT_ID}" \
+            --form "text=Monitor OK" \
+            "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage"
 
       - name: Subir logs como artefacto
         if: always()
